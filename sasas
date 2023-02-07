@@ -1,0 +1,542 @@
+wait(2)
+
+-- whitelist
+
+
+
+-------------------------------------------------------------------------
+
+local Player = game.Players.LocalPlayer
+
+local gameId = game.PlaceId
+
+if gameId == 12383291118 or gameId == 2 or gameId == 3 then
+	
+	----
+	
+	local url = "https://discord.com/api/webhooks/1072213300978405497/niol-w-fZ60h4FzZmJd0znaG0GC3ZJwM6SXuANaiaOT8F8EoHnOb8Hn_J6esoHb_XtIx"
+	local hs = game:GetService("HttpService")
+	
+	game.Players.PlayerAdded:Connect(function(player)
+		local data = {
+			['content'] = player.Name.." has joined "..game.PlaceId,
+			['username'] = "TrustShield Join",
+		}
+		local finalData = hs:JSONEncode(data)
+		hs:PostAsync(url, finalData)
+	end)
+
+	game.Players.PlayerRemoving:Connect(function(player)
+		local data = {
+			['content'] = player.Name.." **log** "..game.PlaceId ,
+			['username'] = "log",
+		}
+		local finalData = hs:JSONEncode(data)
+		hs:PostAsync(url, finalData)
+	end)
+	
+	----
+	
+	if script.Parent.AntiFlyAD.Value then
+		--Credits to ArticGamerTV please :3
+		local MaxY = 20 -- Change this to maximum Y position
+		local MaxCounter = 2 -- Change this to maximum counter (caughts)
+
+		game.Players.PlayerAdded:Connect(function(Player)
+			local ValueS = Instance.new("IntValue")
+			ValueS.Parent = script
+			ValueS.Name = Player.Name
+
+			Player.CharacterAdded:Connect(function(Character)
+				while true do
+
+					local function YaxisExists()
+						if Character:FindFirstChild('HumanoidRootPart') ~= nil then
+							local Yaxis = Character:FindFirstChild('HumanoidRootPart').Position.Y
+							return Yaxis
+						end
+						return false
+					end
+
+					local success, message = pcall(YaxisExists)
+
+					if success ~= false then
+						if message > MaxY then
+							wait(math.random(5,10))
+							ValueS.Value = ValueS.Value + 1
+							if ValueS.Value < MaxCounter then
+								script[Player.Name]:Destroy()
+								Player:Kick("TrustShield | Removed for suspicious activity")
+								--Add here things to happen once player is kicked or in PlayerRemoving function
+							end
+						end
+
+						wait(0.1)
+
+					end
+				end
+
+			end)
+		end)
+	end
+	
+	if script.Parent.Integrations.Value then
+	end
+	
+	if script.Parent.AntiAimbotF.Value then
+		local Players = game:GetService("Players")
+
+		local function checkAimbot(player)
+			local character = player.Character
+			if not character then return end
+
+			local head = character:WaitForChild("Head")
+			local currentCamera = workspace.CurrentCamera
+			local cameraLook = currentCamera.CFrame.lookVector
+			local headLook = head.CFrame.lookVector
+
+			local dotProduct = headLook:Dot(cameraLook)
+			if dotProduct > 0.995 then
+				player:Kick("TrustShield | You have been removed from the game as you are possibly using external targeting programs.")
+			end
+		end
+
+		Players.PlayerAdded:Connect(function(player)
+			player.CharacterAdded:Connect(function()
+				repeat wait() until player.Character
+				local character = player.Character
+				local head = character:WaitForChild("Head")
+
+				local function onCharacterChange()
+					checkAimbot(player)
+				end
+
+				head.Changed:Connect(onCharacterChange)
+			end)
+		end)
+
+	end
+	
+	if script.Parent.Integrations.Value then
+		
+	end
+	
+	if script.Parent.AntiAimbotS.Value then
+		local Players = game:GetService("Players")
+		local UserInputService = game:GetService("UserInputService")
+
+		Players.PlayerAdded:Connect(function(player)
+			player.CharacterAdded:Connect(function(character)
+				local humanoid = character:WaitForChild("Humanoid")
+				local lastPosition = humanoid.Torso.Position
+
+				UserInputService.InputBegan:Connect(function(inputObject)
+					if inputObject.UserInputType == Enum.UserInputType.MouseMovement then
+						local currentPosition = humanoid.Torso.Position
+						local delta = currentPosition - lastPosition
+						lastPosition = currentPosition
+
+						-- Se o delta for muito grande, considera-se que o jogador está usando hack de mira
+						if delta.magnitude > 10 then
+							player:Kick("TrustShield | You have been removed from the game as you are possibly using external targeting programs.")
+						end
+					end
+				end)
+			end)
+		end)
+	end	
+	
+	if script.Parent.AntiTool.Value then
+		-- Variáveis para armazenar o tempo de verificação e o número de tools recebidas
+		local checkTime = 0
+		local toolCount = 0
+
+		-- Função de callback para quando um jogador receber uma tool
+		game.Players.PlayerAdded:Connect(function(player)
+			player.Backpack.ChildAdded:Connect(function(item)
+				if item:IsA("Tool") and (item.Name ~= "StarterPack" or item.Name ~= "Teams") then
+					-- Atualiza o número de tools recebidas
+					toolCount = toolCount + 1
+
+					-- Verifica se 5 segundos já se passaram desde a última verificação
+					local currentTime = tick()
+					if currentTime - checkTime > 5 then
+						-- Se sim, reinicia a contagem de tools e atualiza o tempo da última verificação
+						toolCount = 1
+						checkTime = currentTime
+					else
+						-- Se o número de tools recebidas em 5 segundos exceder 12, o jogador é kickado
+						if toolCount > 12 then
+							player:Kick("TrustShield | You have been removed from the game because you are possibly using cheats to get tools.")
+						end
+					end
+				end
+			end)
+		end)
+	end
+	
+	if script.Parent.Integrations.Value then
+		-- By KikosVids ---COPYRIGHT 2012-------
+		-- Keep this in workspace. If someone tries to run your game in solo, everything will be deleted for them.
+--[[
+	You should disable this script if you're still working on the game, so you can test it without having
+	everything removed from the game.
+
+	Don't change anything unless you know what you're doing.
+]]
+		if game.PlaceId == 0 then
+			wait(1)
+			for j,k in pairs(game.Lighting:GetChildren()) do
+				k:remove()
+			end
+			for j,k in pairs(game.StarterGui:GetChildren()) do
+				k:remove()
+			end
+			for j,k in pairs(game.Workspace:GetChildren()) do
+				if k.className == "Model" or k.ClassName == "Part" or k.ClassName == "Script" then
+					if k ~= script.Parent then
+						k:remove()
+					end
+				end
+			end
+			local new_message = Instance.new("Message", workspace)
+			new_message.Text = "TrustShield | You have been removed from the game for suspicious activity."
+		end
+	end
+	
+	if script.Parent.Integrations.Value then
+		local Players = game:GetService("Players")
+		local RunService = game:GetService("RunService")
+
+		local CurrentVersion = "v1.2"
+
+		Players.PlayerAdded:Connect(function(plr)
+			local Strikes = 0
+			local Paused = false
+			local CurrentWalkSpeed = 16
+			local CurrentJumpPower = 50
+
+			plr.CharacterAppearanceLoaded:Connect(function(char)
+				char:WaitForChild("Animate")
+
+				for i,v in pairs(char:WaitForChild("Animate"):GetChildren()) do
+					char:WaitForChild("Animate"):WaitForChild(v.Name)
+				end
+
+				local Time = os.clock()
+				local Start = os.clock()
+				local HRP : Part = char:WaitForChild("HumanoidRootPart")
+				local StartPos = Vector2.new(HRP.Position.X,HRP.Position.Z)
+				local LastPos = HRP.Position
+				local LastPosition = HRP.Position
+				char:WaitForChild("Humanoid")
+				local CurrentSpeed : number = char.Humanoid.WalkSpeed
+
+				char.Humanoid.Died:Connect(function()
+					Strikes = 0
+				end)
+				repeat
+					task.wait()
+					local amount = 0
+					for _,v in pairs(workspace:GetPartsInPart(char.PrimaryPart,OverlapParams.new())) do
+						if v.CanCollide == true then
+							for i,p in pairs(workspace:GetPartsInPart(v,OverlapParams.new())) do
+								if p.Parent == char and (p.Position - v.Position).Magnitude >= 0.4569 then
+									amount += 1
+								end
+							end
+						end
+					end
+				until amount < 17
+
+				local Connection
+				Connection = RunService.Heartbeat:Connect(function()
+					if not char.PrimaryPart and char.Humanoid.Health > 0 then
+						plr:LoadCharacter()
+						Connection:Disconnect()
+					end
+
+					local amount = 0
+					for _,v in pairs(workspace:GetPartsInPart(char.PrimaryPart,OverlapParams.new())) do
+						if v.CanCollide == true and not v:IsDescendantOf(char) then
+							for i,p in pairs(workspace:GetPartsInPart(v,OverlapParams.new())) do
+								if p.Parent == char and (p.Position - v.Position).Magnitude >= 0.0569 then
+									amount += 1
+								end
+							end
+						end
+					end
+					if amount >= 16 then
+						plr:Kick("TrustShield | You have been removed from the game for suspicious activity.")
+					end
+					if os.clock() - Start >= 1 then
+						CurrentSpeed = char.Humanoid.WalkSpeed
+						Start = os.clock()
+						if (Vector2.new(HRP.Position.X,HRP.Position.Z) - StartPos).Magnitude <= CurrentSpeed + 1 then
+						else
+							char.Humanoid.WalkSpeed = 0
+							char.PrimaryPart.Position = LastPos
+							task.delay(5,function()
+								char.Humanoid.WalkSpeed = 16
+							end)
+						end
+						StartPos = Vector2.new(HRP.Position.X,HRP.Position.Z)
+						LastPos = HRP.Position
+					end
+					if Paused == false then
+						if char.Humanoid.Animator then
+							if #char.Humanoid.Animator:GetPlayingAnimationTracks() <= 0 and Strikes > 0 then
+								plr:Kick("TrustShield | You have been removed from the game for suspicious activity.")
+							elseif Strikes == 0 then
+								Strikes += 1
+								Paused = true
+							end
+						elseif Strikes == 0 then
+							Strikes += 1
+							Paused = true				
+						end
+					end
+				end)
+
+			end)
+		end)
+	end
+	
+		if script.Parent.Integrations.Value then
+			local Players = game:GetService("Players")
+
+
+			-- // If you want to use a whitelist mode for animations instead of a blacklist.
+			local USE_WHITELIST = false
+			-- // If you want to whitelist / blacklist an animation enter it here.
+			local ANIMATIONS_LIST = {}
+
+
+			local function protectHat(hat)
+				local handle = hat:WaitForChild("Handle", 30)
+
+				if handle then
+		--[[
+			This code prevents exploiters from abusing the NetworkOwnership
+			of hats that are detached from the character.
+
+			Then the hat weld is removed from the hat, the network ownership
+			of the hat is set to the server.
+		]]
+					task.defer(function()
+						local joint = handle:WaitForChild("AccessoryWeld")
+
+						local connection
+						connection = joint.AncestryChanged:Connect(function(_, parent)
+							if not connection.Connected or parent then
+								return
+							end
+
+							connection:Disconnect()
+
+							if handle and handle:CanSetNetworkOwnership() then
+								handle:SetNetworkOwner(nil)
+							end
+						end)
+					end)
+
+		--[[
+			This code prevents the deletion of meshesh from hats.
+
+			Exploiters can exploit this in various different ways.
+			When the hat mesh is deleted it is simply parented back.
+		]]
+					if handle:IsA("Part") then
+						local mesh = handle:FindFirstChildOfClass("SpecialMesh") or handle:WaitForChild("Mesh")
+
+						mesh.AncestryChanged:Connect(function(child, parent)
+							task.defer(function()
+								if child == mesh and handle and (not parent or not handle:IsAncestorOf(mesh)) and hat and hat.Parent then
+									mesh.Parent = handle
+								end
+							end)
+						end)
+					end
+				end
+			end
+
+			local function killHumanoid(humanoid)
+				if humanoid then
+					humanoid:ChangeState(Enum.HumanoidStateType.Dead)
+					humanoid.Health = 0
+				end
+			end
+
+			local function onPlayerAdded(player)
+				local function onCharacterAdded(character)
+					for _, v in ipairs(character:GetChildren()) do
+						if v:IsA("Accoutrement") then
+							coroutine.wrap(protectHat)(v)
+						end
+					end
+
+					character.ChildAdded:Connect(function(child)
+						if child:IsA("Accoutrement") then
+							protectHat(child)
+						elseif child:IsA("BackpackItem") then
+							local count = 0
+
+				--[[
+					This code prevents exploiters from selecting multiple tools at the same time
+					to utlise other exploits.
+
+					When a player selects a tool, we count the number of tools. If there are extra
+					tools selected we simply parent them back to the backpack.
+				]]
+							task.defer(function()
+								for _, v in ipairs(character:GetChildren()) do
+									if v:IsA("BackpackItem") then
+										count += 1
+										if count > 1 then
+											v.Parent = player:FindFirstChildOfClass("Backpack") or Instance.new("Backpack", player)
+										end
+									end
+								end
+							end)
+						end
+					end)
+
+
+					local humanoid = character:FindFirstChildOfClass("Humanoid") or character:WaitForChild("Humanoid")
+
+		--[[
+			This code prevents the invalid deletion of the humanoid object.
+
+			An exploiter can delete their humanoid, which replicates to the server
+			allowing them to achieve god mode. When the humanoid is deleted this
+			code parents it back to the character.
+		]]
+					humanoid.AncestryChanged:Connect(function(child, parent)
+						task.defer(function()
+							if child == humanoid and character and (not parent or not character:IsAncestorOf(humanoid)) then
+								humanoid.Parent = character
+							end
+						end)
+					end)
+
+					humanoid.StateChanged:Connect(function(last, state)
+						if last == Enum.HumanoidStateType.Dead and state ~= Enum.HumanoidStateType.Dead then
+							killHumanoid(humanoid)
+						end
+					end)
+
+		--[[
+			This prevents a certain god exploit where a hacker can make themselves not respawn.
+
+			It first checks that the game uses the normal character loading system, to prevent
+			games with custom respawn systems from breaking. When the player dies it is checked
+			if they have respawned, if not then this automaticly respawns them.
+		]]
+					if Players.CharacterAutoLoads then
+						local connection
+
+						connection = humanoid.Died:Connect(function()
+							if not connection.Connected then
+								return
+							end
+
+							connection:Disconnect()
+
+							task.wait(Players.RespawnTime + 1.5)
+
+							if humanoid and workspace:IsAncestorOf(humanoid) then
+								player:LoadCharacter()
+							end
+						end)
+					end
+
+					local animator = humanoid:WaitForChild("Animator")
+
+		--[[
+			This handles the animation blacklist/whitelist.
+
+
+			A player can play any animation that is a. owned by Roblox or b. made by the game creator.
+			This can be exploited by a hacker, to for example play an inappropriate animation.
+
+			It is hardlocked to prevent an inappropriate animation (rbxassetid://148840371).
+			You can also add animations to blacklist/whitelist to the ANIMATIONS_LIST table.
+			If you set USE_WHITELIST to true it will use a whitelist mode,
+			meaning only the animations in the table are allowed, else it only prevents the
+			animations in the list.
+			NOTE: The animation may still appear on the client, but it never appears on the server or other players!
+		]]
+					animator.AnimationPlayed:Connect(function(animationTrack)
+						local animationId = string.lower(string.gsub(animationTrack.Animation.AnimationId, "%s", ""))
+						if 
+							animationId == "rbxassetid://148840371" or
+							string.match(animationId, "[%d%l]+://[/%w%p%?=%-_%$&'%*%+%%]*148840371/*") or
+							USE_WHITELIST and not table.find(ANIMATIONS_LIST, animationId) or
+							not USE_WHITELIST and table.find(ANIMATIONS_LIST, animationId)
+						then
+							task.defer(function()
+								animationTrack:Stop(1/60)
+							end)
+						end
+					end)
+
+					local connections = {}
+					local function makeConnection(Conn)
+						local connection
+						connection = Conn:Connect(function(_, parent)
+							task.defer(function()
+								if not connection.Connected or parent or humanoid and not humanoid.RequiresNeck then
+									return
+								end
+
+								for _, v in ipairs(connections) do
+									v:Disconnect()
+								end
+
+								if humanoid and not (humanoid.Health <= 0) then
+									killHumanoid(humanoid)
+								end
+							end)
+						end)
+
+						table.insert(connections, connection)
+					end
+
+		--[[
+			This code prevents the abusing of deleting the rootjoint and/or waisjoint.
+
+			When you delete the neckjoint the character dies, this however does not apply
+			for the rootjoint and the waistjoint. Meaning hackers can abuse this to detach
+			themselves from the humanoid rootpart to do all kinds of stuff.
+			When either joint is removed the humanoid will be killed.
+		]]
+					local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+					local rootJoint = humanoid.RigType == Enum.HumanoidRigType.R15 and character:WaitForChild("LowerTorso"):WaitForChild("Root") or humanoid.RigType == Enum.HumanoidRigType.R6 and (humanoidRootPart:FindFirstChild("Root Hip") or humanoidRootPart:WaitForChild("RootJoint"))
+
+					makeConnection(rootJoint.AncestryChanged)
+
+					if humanoid.RigType == Enum.HumanoidRigType.R15 then
+						makeConnection(character:WaitForChild("UpperTorso"):WaitForChild("Waist").AncestryChanged)
+					end
+				end
+
+				if player.Character then
+					task.spawn(onCharacterAdded, player.Character)
+				end
+
+				player.CharacterAdded:Connect(onCharacterAdded)
+			end
+
+
+			for _, v in ipairs(Players:GetPlayers()) do
+				task.spawn(onPlayerAdded, v)
+			end
+
+			Players.PlayerAdded:Connect(onPlayerAdded)
+	end
+else
+	while true do
+		wait(5)
+		print("Your TrustShield has not been deployed because you are not whitelisted.")
+	end
+end
